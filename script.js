@@ -1,4 +1,4 @@
-import parameters from './parameters';
+import { parameters } from './parameters.js';
 
 // HTML elements
 let tableBody = document.getElementById("tableBody");
@@ -7,43 +7,6 @@ let movieInput = document.getElementById("movieName");
 
 // Data structures
 let movies = [];
-movieList = {
-    results: [
-        {
-            id: 200,
-            title: "AAAABBB",
-            runtimeMins: "123",
-            year: "2000",
-            imDbRating: "10/10",
-        },
-        {
-            id: 1219,
-            title: "CCCcAAA",
-            runtimeMins: "123",
-            year: "2000",
-            imDbRating: "10/10",
-        },
-        {
-            id: 1229,
-            title: "AasdasdAA",
-            runtimeMins: "123",
-            year: "2000",
-            imDbRating: "10/10",
-        },
-        {
-            id: 19921,
-            title: "!@!@!@",
-            runtimeMins: "123",
-            year: "2000",
-            imDbRating: "10/10",
-        },
-    ]
-}
-
-let getParamValue = async (param) => {
-    let r = fetch('parameters.json').then(r => r.json()).then(p => p[param]);
-    return await r;
-}
 
 let API_KEY = parameters.IMDB_API_KEY;
 let SCRIPT_URL = parameters.SCRIPT_URL;
@@ -55,21 +18,14 @@ let fetchMovie = async (e) => {
 
     let expression = movieInput.value;
 
-    // console.log(expression);
-    
     // Obtener listado de peliculas con ese nombre
     const rawMovieListResponse = await fetch(`https://imdb-api.com/en/API/SearchMovie/${API_KEY}/${expression}`)
-    // const movieList = await rawMovieListResponse.json();
-
-    // console.log(movieList);
+    const movieList = await rawMovieListResponse.json();
 
     // Obtener la informacion para esa lista de resultados
     movieList.results.forEach(async (m) => {
         const rawMovieInformationResponse = await fetch(`https://imdb-api.com/en/API/Title/${API_KEY}/${m.id}/Ratings,`)
-        // const movieInfo = await rawMovieInformationResponse.json();
-        movieInfo = m;
-
-        // console.log(movieInfo);
+        const movieInfo = await rawMovieInformationResponse.json();
 
         // Construir objeto para agregar a la lista de peliculas
         movies.push({
