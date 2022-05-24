@@ -1,0 +1,11 @@
+{
+    "name": "MoviExtention",
+    "version": "1.0.0",
+    "description": "Obtener informacion de peliculas y cargarlas en una hoja de calculo.",
+    "manifest_version": 3,
+    "author": "Mariano Saez",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "Movie Extention"
+    }
+}
