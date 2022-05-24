@@ -1,5 +1,9 @@
 import { parameters } from './parameters.js';
 
+// APP KEYS
+let API_KEY = parameters.IMDB_API_KEY2;
+let SCRIPT_URL = parameters.SCRIPT_URL;
+
 // HTML elements
 let tableBody = document.getElementById("tableBody");
 let clip = document.getElementById("clip");
@@ -8,13 +12,10 @@ let movieInput = document.getElementById("movieName");
 // Data structures
 let movies = [];
 
-let API_KEY = parameters.IMDB_API_KEY;
-let SCRIPT_URL = parameters.SCRIPT_URL;
-
-console.log(SCRIPT_URL)
 
 let fetchMovie = async (e) => {
     e.preventDefault();
+    tableBody.innerHTML = "";
 
     let expression = movieInput.value;
 
@@ -24,29 +25,34 @@ let fetchMovie = async (e) => {
 
     // Obtener la informacion para esa lista de resultados
     movieList.results.forEach(async (m) => {
-        const rawMovieInformationResponse = await fetch(`https://imdb-api.com/en/API/Title/${API_KEY}/${m.id}/Ratings,`)
+        const rawMovieInformationResponse = await fetch(`https://imdb-api.com/en/API/Title/${API_KEY}/${m.id}/Posters,Ratings,`)
         const movieInfo = await rawMovieInformationResponse.json();
 
-        // Construir objeto para agregar a la lista de peliculas
-        movies.push({
-            "id":movieInfo.id,
-            "Nombre": movieInfo.title,
-            "Duracion": movieInfo.runtimeMins,
-            "Year": movieInfo.year,
-            "Rating": movieInfo.imDbRating,
-        });
-        
-        tableBody.innerHTML += `
-            <tr>
-                <form>
-                    <td>${movieInfo.title}</td>
-                    <td>${movieInfo.runtimeMins}</td>
-                    <td>${movieInfo.year}</td>
-                    <td>${movieInfo.imDbRating}</td>
-                    <td> <button class="btn btn-primary gs" id="${movieInfo.id}">Enviar</button></td>
-                </form>
-            </tr>
-        `
+        // Comprobar si no es alguna pelicula que no es
+        if ( movieInfo.runtimeMins != null || !movieInfo.runtimeMins.includes('P') ) {
+            
+                    // Construir objeto para agregar a la lista de peliculas
+                    movies.push({
+                        "id":movieInfo.id,
+                        "Nombre": movieInfo.title,
+                        "Duracion": movieInfo.runtimeMins,
+                        "Year": movieInfo.year,
+                        "Rating": movieInfo.imDbRating,
+                    });
+                    
+                    tableBody.innerHTML += `
+                        <tr>
+                            <form>
+                                <td> <img src="${movieInfo.image}" width="48px" height="72px"> </td>
+                                <td>${movieInfo.title}</td>
+                                <td>${movieInfo.runtimeMins}</td>
+                                <td>${movieInfo.year}</td>
+                                <td>${movieInfo.imDbRating}</td>
+                                <td> <button class="btn btn-primary gs" id="${movieInfo.id}">Enviar</button></td>
+                            </form>
+                        </tr>
+                    `
+        }
 
     });
 
